@@ -1,0 +1,30 @@
+[project]
+name = "cairo_rand_64x61"
+version = "1.0.0"
+authors = [
+  { name="Unstoppable Games, Inc.", email="info@unstoppablegames.io" },
+]
+description = "Pseudorandom and procedural generation library using 64.61 fixed point"
+license = { file="LICENSE" }
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/influenceth/cairo-rand-64x61"
+"Bug Tracker" = "https://github.com/influenceth/cairo-rand-64x61/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = [ "contracts" ]
+include = [ "cairo_rand_64x61" ]
+
+[tool.setuptools.package-data]
+cairo_rand_64x61 = [ "*.cairo" ]

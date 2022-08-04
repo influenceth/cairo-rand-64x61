@@ -1,10 +1,10 @@
 {
   "name": "@infuenceth/cairo-rand",
   "version": "1.0.0",
-  "description": "Psuedorandom generation library",
+  "description": "Pseudorandom and procedural generation library using 64.61 fixed point",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/influenceth/cairo-rand.git"
+    "url": "git+https://github.com/influenceth/cairo-rand-64x61.git"
   },
   "author": "Unstoppable Games, Inc.",
   "license": "MIT",
@@ -13,7 +13,6 @@
     "almost-equal": "^1.1.0",
     "bignumber.js": "^9.0.2",
     "chai": "^4.3.4",
-    "hardhat": "^2.8.3",
-    "influenceth__cairo_math_64x61": "npm:@influenceth/cairo-math-64x61@^1.2.0"
+    "hardhat": "^2.8.3"
   }
 }
