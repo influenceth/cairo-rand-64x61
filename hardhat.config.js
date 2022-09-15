@@ -14,7 +14,7 @@ module.exports = {
     },
     integratedDevnet: {
       url: "http://127.0.0.1:5050",
-      dockerizedVersion: "0.2.3-arm"
+      dockerizedVersion: "0.3.0"
     }
   },
   paths: {
