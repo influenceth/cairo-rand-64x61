@@ -1,13 +1,13 @@
 [project]
 name = "cairo_rand_64x61"
-version = "1.0.0"
+version = "2.0.0"
 authors = [
   { name="Unstoppable Games, Inc.", email="info@unstoppablegames.io" },
 ]
 description = "Pseudorandom and procedural generation library using 64.61 fixed point"
 license = { file="LICENSE" }
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
