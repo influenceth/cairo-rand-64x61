@@ -7,6 +7,8 @@
     "url": "git+https://github.com/influenceth/cairo-rand-64x61.git"
   },
   "scripts": {
+    "release": "python3.9 -m twine upload dist/*",
+    "build": "python3.9 -m build",
     "postinstall": "pip install -r requirements.txt",
     "test": "npx hardhat test --starknet-network integratedDevnet"
   },
