@@ -1,15 +1,19 @@
 {
   "name": "@infuenceth/cairo-rand",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Pseudorandom and procedural generation library using 64.61 fixed point",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/influenceth/cairo-rand-64x61.git"
   },
+  "scripts": {
+    "postinstall": "pip install -r requirements.txt",
+    "test": "npx hardhat test --starknet-network integratedDevnet"
+  },
   "author": "Unstoppable Games, Inc.",
   "license": "MIT",
   "devDependencies": {
-    "@shardlabs/starknet-hardhat-plugin": "^0.6.6-alpha.0",
+    "@shardlabs/starknet-hardhat-plugin": "^0.6.6",
     "almost-equal": "^1.1.0",
     "bignumber.js": "^9.0.2",
     "chai": "^4.3.4",

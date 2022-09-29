@@ -30,7 +30,19 @@ describe('simplex', function () {
 
     for (const [ i, args ] of argsList.entries()) {
       const v = args.map((a) => to64x61(a));
-      const { res } = await contract.call('Simplex_noise3_test', { v });
+      const { res } = await contract.call('noise3_test', { v });
+      expect(Number(from64x61(res).toFixed(5))).to.equal(expected[i]);
+    }
+  });
+
+  // Based on a 0 to 1 normalized single octave of webgl simplex3
+  it('should return noise values for various percentiles', async () => {
+    const argsList = [ 0.1, 0.6175, 0.2531 ];
+    const expected = [ 0.24280, 0.56789, 0.35713 ];
+
+    for (const [ i, args ] of argsList.entries()) {
+      const percentile = to64x61(args);
+      const { res } = await contract.call('noise3_at_percentile_test', { percentile });
       expect(Number(from64x61(res).toFixed(5))).to.equal(expected[i]);
     }
   });

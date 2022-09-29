@@ -1,5 +1,7 @@
 from starkware.cairo.common.math import signed_div_rem, abs_value
 from starkware.cairo.common.math_cmp import is_le
+from starkware.cairo.common.registers import get_label_location
+
 from cairo_math_64x61.math64x61 import Math64x61
 from cairo_math_64x61.vec64x61 import Vec64x61
 
@@ -248,6 +250,30 @@ namespace Simplex {
     local res_sum = mx_0 + my_1 + mz_2 + mw_3;
     return Math64x61.mul(res_sum, 42 * Math64x61.ONE);
   }
+
+  // Returns the average noise value given a percentile (from 0 to 1) for a single
+  // octave of simplex noise scaled to a range from 0 to 1
+  // Arg and return are both in 64.61
+  func noise3_at_percentile{range_check_ptr}(percentile: felt) -> felt {
+    alloc_locals;
+    let upper_half = is_le(1152921504606846976, percentile); // 0.5
+    let inverse = Math64x61.ONE - percentile;
+    let perc = upper_half * inverse + percentile - upper_half * percentile;
+    let perc = Math64x61.mul(perc, Math64x61.ONE * 100);
+    let (dist_data) = _simplex_dist_data();
+    let slot = Math64x61.toFelt(perc);
+    let whole_noise_val = dist_data[slot];
+    let next_noise_val = dist_data[slot + 1];
+    let whole_perc = Math64x61.floor(perc);
+    let fract_perc = perc - whole_perc;
+    let partial_noise_val = Math64x61.mul(fract_perc, next_noise_val - whole_noise_val);
+
+    if (upper_half == 1) {
+      return Math64x61.ONE - whole_noise_val - partial_noise_val;
+    }
+
+    return whole_noise_val + partial_noise_val;
+  }
 }
 
 // Calculate x mod 289
@@ -307,4 +333,63 @@ func _abs_v4{range_check_ptr}(a: (felt, felt, felt, felt)) -> (felt, felt, felt,
   let res_z = abs_value(a[2]);
   let res_w = abs_value(a[3]);
   return (res_x, res_y, res_z, res_w);
+}
+
+// Cumulative probablity distribution (up to 50%) for simplex3D in 64.61
+func _simplex_dist_data() -> (data: felt*) {
+  let (data_address) = get_label_location(data_start);
+  return (data = cast(data_address, felt*));
+
+  data_start:
+  dw 0;
+  dw 271799274386227200;
+  dw 319122254845706240;
+  dw 358634304701464576;
+  dw 393079804976431104;
+  dw 425836455391133696;
+  dw 456411674736328704;
+  dw 484699909895749632;
+  dw 511088188962373632;
+  dw 536209830633799680;
+  dw 559853728677494784;
+  dw 582442095558524928;
+  dw 604150853137334272;
+  dw 624592973320945664;
+  dw 643979562341892096;
+  dw 662275435828084736;
+  dw 679973174988767232;
+  dw 696932042335584256;
+  dw 713539065961512960;
+  dw 729512770889842688;
+  dw 745134632097284096;
+  dw 760650940188459008;
+  dw 775780220186656768;
+  dw 790346550231433216;
+  dw 804736958415765504;
+  dw 819092182228008960;
+  dw 833271484179808256;
+  dw 847274864271163392;
+  dw 860926400641630208;
+  dw 874366830779564032;
+  dw 887596154684964864;
+  dw 900649556729921536;
+  dw 913843696263233536;
+  dw 927178573284900864;
+  dw 940548634678657024;
+  dw 953813142956146688;
+  dw 966866545001103360;
+  dw 979990315790237696;
+  dw 993114086579372032;
+  dw 1006132304252239872;
+  dw 1019009784436752384;
+  dw 1032203923970064384;
+  dw 1045644354107998208;
+  dw 1058979231129665536;
+  dw 1072349292523421696;
+  dw 1085719353917177856;
+  dw 1098983862194667520;
+  dw 1112037264239624192;
+  dw 1124809191307870208;
+  dw 1137757040236560384;
+  dw 1152921504606846976;
 }
