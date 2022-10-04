@@ -93,7 +93,7 @@ describe('simplex', function () {
     }
   });
 
-  it.only('should output information on execution', async () => {
+  it('should output information on execution', async () => {
     const args = { v: [ 0.5, -1.23, 1.63 ], octaves: 8, persistence: 0.5 };
     const txHash = await user.invoke(contract, 'noise3_octaves_test', {
       v: args.v.map((a) => to64x61(a)),
