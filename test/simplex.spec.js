@@ -1,7 +1,6 @@
 const chai = require('chai');
-const almost = require('almost-equal');
 const starknet = require('hardhat').starknet;
-const { toFelt, to64x61, from64x61 } = require('./helpers');
+const { getAccounts, to64x61, from64x61 } = require('./helpers');
 
 // Setup test suite
 const expect = chai.expect;
@@ -10,11 +9,13 @@ const ABS_TOL = 5e-7;
 
 describe('simplex', function () {
   this.timeout(600_000);
-  let contract;
+  let contract, user;
 
   before(async () => {
     const contractFactory = await starknet.getContractFactory('simplex_mock');
     contract = await contractFactory.deploy();
+    const accounts = await getAccounts({ count: 4 });
+    user = accounts[0];
   });
 
   it('should return accurate results for 3D noise', async () => {
@@ -90,5 +91,19 @@ describe('simplex', function () {
 
       expect(Number(from64x61(res).toFixed(5))).to.equal(Number(expectedNoise.toFixed(5)));
     }
+  });
+
+  it.only('should output information on execution', async () => {
+    const args = { v: [ 0.5, -1.23, 1.63 ], octaves: 8, persistence: 0.5 };
+    const txHash = await user.invoke(contract, 'noise3_octaves_test', {
+      v: args.v.map((a) => to64x61(a)),
+      octaves: args.octaves,
+      persistence: to64x61(args.persistence)
+    });
+
+    const receipt = await starknet.getTransactionReceipt(txHash);
+    const steps = receipt.execution_resources.n_steps / 8;
+    const gas = steps * 0.05;
+    console.log(gas.toLocaleString(), 'gas per noise3 octave');
   });
 });

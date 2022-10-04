@@ -25,6 +25,19 @@ const from64x61 = (num) => {
   return res.div(SCALE).toNumber();
 }
 
+const getAccounts = async function ({ count=2 }) {
+  const results = [];
+  const accounts = await starknet.devnet.getPredeployedAccounts();
+  for (let i = 0; i < count; i++) {
+    const account = await starknet.getAccountFromAddress(
+      accounts[i].address,
+      accounts[i].private_key,
+      'OpenZeppelin');
+    results.push(account);
+  }
+  return results;
+};
+
 module.exports = {
   SCALE,
   PRIME,
@@ -32,5 +45,6 @@ module.exports = {
   PI,
   toFelt,
   to64x61,
-  from64x61
+  from64x61,
+  getAccounts
 };
