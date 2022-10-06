@@ -7,7 +7,8 @@ from cairo_math_64x61.vec64x61 import Vec64x61
 
 namespace Simplex {
   // Primary method to calculate Simplex 3D noise at a 3D point
-  // @param v A 64.61 fixed point 3d vector
+  // @param v {fixed[]} A 3d point
+  // @return {fixed} A noise value between -1 and 1
   func noise3{range_check_ptr}(v: (felt, felt, felt)) -> felt {
     alloc_locals;
 
@@ -253,12 +254,12 @@ namespace Simplex {
   }
 
   // Returns multiple octaves of noise with a persistence dropoff
-  // @param v A 64.61 fixed point 3d vector
-  // @param octaves A simple felt indicating the number of iterations to add together
-  // @param persistence A 64.61 fixed point value used to decrease (or increase) the impact of each iteration
+  // @param v {fixed[]} A 3d point
+  // @param octaves {integer} The number of iterations to add together
+  // @param persistence {fixed} Value used to decrease (or increase) the impact of each iteration
   func noise3_octaves{range_check_ptr}(v: (felt, felt, felt), octaves: felt, persistence: felt) -> felt {
     let noise = _noise3_octaves_loop{persistence = persistence, v = v}(
-      noise = 0, octaves = octaves, scale = Math64x61.ONE
+      noise = 0, octaves = octaves, scale = Math64x61.ONE, total_range = 0
     );
 
     return noise;
@@ -266,7 +267,7 @@ namespace Simplex {
 
   // Returns the average noise value given a percentile for a single octave of simplex noise scaled
   // to a range from 0 to 1
-  // @param percentile A 64.61 fixed point value indicating the percentile (between 0 and 1)
+  // @param percentile {fixed} Value indicating the percentile (between 0 and 1)
   func noise3_at_percentile{range_check_ptr}(percentile: felt) -> felt {
     alloc_locals;
     let upper_half = is_le(1152921504606846976, percentile); // 0.5
@@ -289,17 +290,23 @@ namespace Simplex {
   }
 
   func _noise3_octaves_loop{range_check_ptr, persistence: felt, v: (felt, felt, felt)}(
-      noise: felt, octaves: felt, scale: felt
+      noise: felt, octaves: felt, scale: felt, total_range: felt
     ) -> felt {
     if (octaves == 0) {
-      return noise;
+      let normalized_noise = Math64x61.div(noise, total_range);
+      return normalized_noise;
     }
 
     let resized_point = Vec64x61.div(v, scale);
     let current_noise = noise3(resized_point);
     let scaled_noise = Math64x61.mul(current_noise, scale);
     let new_scale = Math64x61.mul(scale, persistence);
-    return _noise3_octaves_loop(noise = noise + scaled_noise, octaves = octaves - 1, scale = new_scale);
+    return _noise3_octaves_loop(
+      noise = noise + scaled_noise,
+      octaves = octaves - 1,
+      scale = new_scale,
+      total_range = total_range + scale
+    );
   }
 }
 

@@ -75,13 +75,17 @@ describe('simplex', function () {
 
     for (const [ i, args ] of argsList.entries()) {
       let expectedNoise = 0;
+      let total = 0;
 
       for (let i = 0; i < args.octaves; i++) {
+        total += Math.pow(args.persistence, i);
         const v = args.v.map((a) => to64x61(a / Math.pow(args.persistence, i)));
         const { res } = await contract.call('noise3_test', { v });
         const currentNoise = from64x61(res) * Math.pow(args.persistence, i);
         expectedNoise += currentNoise;
       }
+
+      expectedNoise = expectedNoise / total;
 
       const { res } = await contract.call('noise3_octaves_test', {
         v: args.v.map((a) => to64x61(a)),

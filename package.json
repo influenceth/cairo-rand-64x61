@@ -1,6 +1,6 @@
 {
   "name": "@infuenceth/cairo-rand",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Pseudorandom and procedural generation library using 64.61 fixed point",
   "repository": {
     "type": "git",
