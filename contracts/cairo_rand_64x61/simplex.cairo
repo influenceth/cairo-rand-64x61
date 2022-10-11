@@ -375,7 +375,7 @@ func _simplex_dist_data() -> (data: felt*) {
   return (data = cast(data_address, felt*));
 
   data_start:
-  dw 0;
+  dw 207525870829232450;
   dw 271799274386227200;
   dw 319122254845706240;
   dw 358634304701464576;
