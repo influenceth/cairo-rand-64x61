@@ -216,16 +216,16 @@ namespace Simplex {
     let p2 = Vec64x61.mul(p2, norm[2]);
     let p3 = Vec64x61.mul(p3, norm[3]);
 
-    // m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+    // m = max(0.5 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
     let x0_x0 = Vec64x61.dot(x0, x0);
     let x1_x1 = Vec64x61.dot(x1, x1);
     let x2_x2 = Vec64x61.dot(x2, x2);
     let x3_x3 = Vec64x61.dot(x3, x3);
 
-    let x0_max = Math64x61.max(1383505805528216371 - x0_x0, 0);
-    let x1_max = Math64x61.max(1383505805528216371 - x1_x1, 0);
-    let x2_max = Math64x61.max(1383505805528216371 - x2_x2, 0);
-    let x3_max = Math64x61.max(1383505805528216371 - x3_x3, 0);
+    let x0_max = Math64x61.max(1152921504606846976 - x0_x0, 0);
+    let x1_max = Math64x61.max(1152921504606846976 - x1_x1, 0);
+    let x2_max = Math64x61.max(1152921504606846976 - x2_x2, 0);
+    let x3_max = Math64x61.max(1152921504606846976 - x3_x3, 0);
 
     // m = m * m;
     let mx = Math64x61.mul(x0_max, x0_max);
@@ -233,7 +233,7 @@ namespace Simplex {
     let mz = Math64x61.mul(x2_max, x2_max);
     let mw = Math64x61.mul(x3_max, x3_max);
 
-    // res = 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+    // res = 105.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
     let mx = Math64x61.mul(mx, mx);
     let my = Math64x61.mul(my, my);
     let mz = Math64x61.mul(mz, mz);
@@ -250,7 +250,7 @@ namespace Simplex {
     let mw_3 = Math64x61.mul(mw, p3_x3);
 
     local res_sum = mx_0 + my_1 + mz_2 + mw_3;
-    return Math64x61.mul(res_sum, 42 * Math64x61.ONE);
+    return Math64x61.mul(res_sum, 105 * Math64x61.ONE);
   }
 
   // Returns multiple octaves of noise with a persistence dropoff
