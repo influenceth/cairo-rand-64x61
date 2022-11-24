@@ -14,7 +14,7 @@ describe('simplex', function () {
   before(async () => {
     const contractFactory = await starknet.getContractFactory('simplex_mock');
     contract = await contractFactory.deploy();
-    const accounts = await getAccounts({ count: 4 });
+    const accounts = await getAccounts({ count: 1 });
     user = accounts[0];
   });
 
@@ -27,7 +27,7 @@ describe('simplex', function () {
       [ -0.005, 12.578, -2.87 ]
     ];
 
-    const expected = [ -0.4122, 0.6335, 0.21512, -0.72603, -0.50797 ];
+    const expected = [ -0.43587, 0.72507, 0.15408, -0.79204, -0.40012 ];
 
     for (const [ i, args ] of argsList.entries()) {
       const v = args.map((a) => to64x61(a));
@@ -39,7 +39,7 @@ describe('simplex', function () {
   // Based on a 0 to 1 normalized single octave of webgl simplex3
   it('should return noise values for various percentiles', async () => {
     const argsList = [ 0.1, 0.6175, 0.2531 ];
-    const expected = [ 0.24280, 0.56789, 0.35713 ];
+    const expected = [ 0.26077, 0.55215, 0.38259 ];
 
     for (const [ i, args ] of argsList.entries()) {
       const percentile = to64x61(args);
@@ -57,7 +57,7 @@ describe('simplex', function () {
       [ -0.005, 12.578, -2.87 ]
     ];
 
-    const expected = [ -0.4122, 0.6335, 0.21512, -0.72603, -0.50797 ];
+    const expected = [ -0.43587, 0.72507, 0.15408, -0.79204, -0.40012 ];
 
     for (const [ i, args ] of argsList.entries()) {
       const v = args.map((a) => to64x61(a));
