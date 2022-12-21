@@ -69,19 +69,22 @@ describe('simplex', function () {
   it('should return octave noise with multiple octaves', async () => {
     const argsList = [
       { v: [ 0.5, -1.23, 1.63 ], octaves: 3, persistence: 0.5 },
-      { v: [ -1.94, -1.25, -1.63 ], octaves: 2, persistence: 0.33 },
-      { v: [ -9.99, 8.25, 6.98 ], octaves: 4, persistence: 0.25 }
+      { v: [ -1.94, -1.25, -1.63 ], octaves: 2, persistence: 0.5 },
+      { v: [ -9.99, 8.25, 6.98 ], octaves: 4, persistence: 0.5 },
+      { v: [ -0.005, 12.578, -2.87 ], octaves: 8, persistence: 0.5 }
     ];
+
+    const expectedFromGLSL = [ 0.32821, 0.07168, -0.40005, -0.17934 ];
 
     for (const [ i, args ] of argsList.entries()) {
       let expectedNoise = 0;
       let total = 0;
 
-      for (let i = 0; i < args.octaves; i++) {
-        total += Math.pow(args.persistence, i);
-        const v = args.v.map((a) => to64x61(a / Math.pow(args.persistence, i)));
+      for (let oct = 0; oct < args.octaves; oct++) {
+        total += Math.pow(args.persistence, oct);
+        const v = args.v.map((a) => to64x61(a / Math.pow(args.persistence, oct)));
         const { res } = await contract.call('noise3_test', { v });
-        const currentNoise = from64x61(res) * Math.pow(args.persistence, i);
+        const currentNoise = from64x61(res) * Math.pow(args.persistence, oct);
         expectedNoise += currentNoise;
       }
 
@@ -94,6 +97,7 @@ describe('simplex', function () {
       });
 
       expect(Number(from64x61(res).toFixed(5))).to.equal(Number(expectedNoise.toFixed(5)));
+      expect(Number(from64x61(res).toFixed(5))).to.equal(Number(expectedFromGLSL[i].toFixed(5)));
     }
   });
 
